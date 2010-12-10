@@ -17,7 +17,7 @@
 
 module ZedDB
   module CLI
-    class Models
+    class Models < Zedkit::CLI::Bottom
       class << self
         def show(opts = {})
           begin
@@ -57,10 +57,6 @@ module ZedDB
             puts "\nDONE.\nZedDB Model Removed [#{ppmm['name']}].\n\n"
           rescue Zedkit::ZedkitError => zke
             puts zke end
-        end
-
-        def method_missing(*args)
-          raise Zedkit::CLI::UnknownCommand.new(:message => "Unknown Command [#{args[0]}]")
         end
 
         protected

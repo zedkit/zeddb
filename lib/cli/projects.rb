@@ -17,7 +17,7 @@
 
 module ZedDB
   module CLI
-    class Projects
+    class Projects < Zedkit::CLI::Bottom
       class << self
         def list(opts = {})
           begin
@@ -27,10 +27,6 @@ module ZedDB
             puts show_models(ppss, ppmm)
           rescue Zedkit::ZedkitError => zke
             puts zke end
-        end
-
-        def method_missing(*args)
-          raise Zedkit::CLI::UnknownCommand.new(:message => "Unknown Command [#{args[0]}]")
         end
 
         protected
