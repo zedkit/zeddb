@@ -18,16 +18,12 @@
 module ZedDB
   module CLI
     class Runner < Zedkit::CLI::Runner
-      SECTIONS = ['project','models']
+      SECTIONS = ['projects','models','items']
 
       protected
       def just_do_it
-        case section
-        when SECTIONS[0]
-          ZedDB::CLI::Projects.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
-        when SECTIONS[1]
-          ZedDB::CLI::Models.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
-        end
+        klass = Object.const_get('ZedDB').const_get('CLI').const_get(section.capitalize)
+        klass.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
       end
       def map
            "\n" \
@@ -38,6 +34,11 @@ module ZedDB
         << "models:create <name> key=value [...]     ## Create a new model\n" \
         << "models:update <uuid> key=value [...]     ## Update an existing model\n" \
         << "models:delete <uuid>                     ## Delete an existing model\n\n" \
+        << "== Model Item Commands\n\n" \
+        << "items:show <uuid>                        ## Show details of a model's data items\n" \
+        << "items:create <name> key=value [...]      ## Create a new data item within a model\n" \
+        << "items:update <uuid> key=value [...]      ## Update an existing data item\n" \
+        << "items:delete <uuid>                      ## Delete an existing data item\n\n" \
         << "==\n\n"
       end
     end

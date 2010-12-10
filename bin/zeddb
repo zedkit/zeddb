@@ -25,6 +25,7 @@ require 'cli/config'
 require 'cli/runner'
 require 'cli/projects'
 require 'cli/models'
+require 'cli/items'
 
 zz = ZedDB::CLI::Runner.new
 zz.go

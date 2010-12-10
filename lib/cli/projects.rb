@@ -21,6 +21,7 @@ module ZedDB
       class << self
         def list(opts = {})
           begin
+            raise Zedkit::CLI::MissingParameter.new(:message => "Project UUID is nil") if opts[:argv][0].nil?
             ppss = Zedkit::Projects.get(:user_key => opts[:user_key], :uuid => opts[:argv][0])
             ppmm = Zedkit::Projects::Models.get(:user_key => opts[:user_key], :project => { :uuid => ppss['uuid'] })
             puts show_models(ppss, ppmm)

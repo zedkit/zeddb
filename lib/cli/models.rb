@@ -30,6 +30,7 @@ module ZedDB
 
         def create(opts = {})
           begin
+            raise Zedkit::CLI::MissingParameter.new(:message => "Project UUID is nil") if opts[:items]['project'].nil?
             ppss = Zedkit::Projects.get(:user_key => opts[:user_key], :uuid => opts[:items]['project'])
             opts[:items].delete('project')
             opts[:items]['name'] = opts[:argv][0]
@@ -64,20 +65,42 @@ module ZedDB
 
         protected
         def show_model(project, model)
-             "\nZedDB Model:\n" \
-          << "  : Project       : #{project['name']}\n" \
-          << "  : UUID          : #{model['uuid']}\n" \
-          << "  : Name          : #{model['name']}\n" \
-          << "  : Resource      : #{model['plural_name']}\n" \
-          << "  : Class         : #{model['model_name']}\n" \
-          << "  : Associations  : #{model['associations'].count}\n" \
-          << "  : Data Items    : #{model['items'].count}\n" \
-          << "  : Locations     : #{model['locations'][0]}\n" \
-          << "                    #{model['locations'][1]}\n" \
-          << "  : Version       : #{model['version']}\n" \
-          << "  : Created       : TBA\n" \
-          << "  : Updated       : TBA\n" \
-          << "---------------------\n\n" \
+          rs  = "\nZedDB Model:\n"
+          rs << "  : Project       : #{project['name']}\n"
+          rs << "  : UUID          : #{model['uuid']}\n"
+          rs << "  : Name          : #{model['name']}\n"
+          rs << "  : Resource      : #{model['plural_name']}\n"
+          rs << "  : Class         : #{model['model_name']}\n"
+          rs << "  : Associations  : #{model['associations'].count}\n"
+          rs << "  : Data Items    : #{model['items'].count}\n"
+          rs << "  : Locations     : #{model['locations'][0]}\n"
+          rs << "                    #{model['locations'][1]}\n"
+          rs << "  : Version       : #{model['version']}\n"
+          rs << "  : Created       : #{Time.at(model['created_at']).to_date}\n"
+          rs << "  : Updated       : #{Time.at(model['updated_at']).to_date}\n"
+          if model['items'].empty?
+            rs << "---------------------\n"
+          else
+            rs << line << "| #{'Model Data Items'.ljust(88)} |\n" << line
+            rs << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Type'.ljust(18)} |\n" << line
+            model['items'].each {|mi| rs << "| #{uuid(mi)} | #{name(mi)} | #{type(mi)} |\n" }
+            rs << line
+          end
+          rs << "\n"
+        end
+
+        private
+        def line
+          Array.new(92,'-').join << "\n"
+        end
+        def uuid(mi)
+          mi['uuid'].ljust(32)
+        end
+        def name(mi)
+          mi['name'].ljust(32)
+        end
+        def type(mi)
+          mi['type']['code'].ljust(18)
         end
       end
     end
