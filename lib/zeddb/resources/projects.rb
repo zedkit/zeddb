@@ -15,22 +15,26 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
+module Zedkit
+  class Projects
+    class Models
+      class << self
+        #
+        # = ZedDB Application Databases
+        #
+        # All projects/applications have an assigned database whether they use it or not. We just bypass the concept of a
+        # separate database API resource. You ask the project/application directly for the models setup within its database:
+        #
+        #   Zedkit::Projects.Models.get(:user_key => user['user_key'], :project => { :uuid => project['uuid'] })
+        #
+        # Each Zedkit project/application has an unique UUID available within the user's projects list, which you can then use
+        # here, and with all methods that collect objects attached to a project/application.
+        #
 
-class TestEntities < Test::Unit::TestCase
-  def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
-    assert_not_nil dbes['data_types']
-    assert_not_nil dbes['validations']
-    assert_not_nil dbes['transformers']
-    assert_not_nil dbes['associations']
-  end
-  def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
-      assert_not_nil dbes['data_types']
-      assert_not_nil dbes['validations']
-      assert_not_nil dbes['transformers']
-      assert_not_nil dbes['associations']
+        def get(zks = {}, &block)
+          Zedkit::Client.crud(:get, 'db/models', zks, [], &block)
+        end
+      end
     end
   end
 end

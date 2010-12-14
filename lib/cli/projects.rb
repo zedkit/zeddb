@@ -20,39 +20,30 @@ module ZedDB
     class Projects < Zedkit::CLI::Bottom
       class << self
         def list(opts = {})
-          begin
-            raise Zedkit::CLI::MissingParameter.new(:message => "Project UUID is nil") if opts[:argv][0].nil?
-            ppss = Zedkit::Projects.get(:user_key => opts[:user_key], :uuid => opts[:argv][0])
-            ppmm = Zedkit::Projects::Models.get(:user_key => opts[:user_key], :project => { :uuid => ppss['uuid'] })
-            puts show_models(ppss, ppmm)
-          rescue Zedkit::ZedkitError => zke
-            puts zke end
+          show_models Zedkit::Project.new(:user_key => opts[:user_key], :locale => opts[:locale], :uuid => opts[:argv][0])
+        end
+        def codes(opts = {})
+          puts "\n" << ZedDB::CLI.ee(opts[:locale], :general, :not_done) << "\n\n"
         end
 
         protected
-        def show_models(project, models)
-          tt = "ZedDB Models [#{project['name']}] [#{models.length} #{models.length > 1 ? 'Models' : 'Model'}]"
-          rs = line << "| #{tt.ljust(118)} |\n" << line
-          rs << "| #{'Name'.ljust(32)} | #{'UUID'.ljust(32)} | #{'Location'.ljust(48)} |\n" << line
-          models.each {|mm| rs << "| #{uuid(mm)} | #{name(mm)} | #{location(mm)} |\n" }
-          rs << line
+        def before_list(opts = {})
+          if opts[:argv][0].nil?
+            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :project, :nil)) end
         end
-
-        private
-        def line
-          Array.new(122,'-').join << "\n"
-        end
-        def uuid(mm)
-          mm['uuid'].ljust(32)
-        end
-        def name(mm)
-          mm['name'].ljust(32)
-        end
-        def location(mm)
-          mm['locations'][0].ljust(48)
+        def show_models(project)
+          mcnt = "[#{project.models.length} #{project.models.length > 1 ? 'Models' : 'Model'}]"
+          puts dashes(122) \
+            << "| " << "ZedDB Models [#{project.name}] #{mcnt}".ljust(118) << " |\n" \
+            << dashes(122) \
+            << "| #{'UUID'.ljust(32)} | #{'Name'.ljust(32)} | #{'Location'.ljust(48)} |\n" \
+            << dashes(122)
+          project.models.each do |mm|
+            puts "| #{mm['uuid'].ljust(32)} | #{mm['name'].ljust(32)} | #{mm['locations'][0].ljust(48)} |\n"
+          end
+          puts dashes(122)
         end
       end
     end
   end
 end
-

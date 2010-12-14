@@ -15,22 +15,22 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
+module ZedDB
+  class ModelValidation < Zedkit::Instance
+    def model_item
+      ZedDB::ModelItem.new(:user_key => uk, :locale => lc, :uuid => item['uuid'])
+    end
 
-class TestEntities < Test::Unit::TestCase
-  def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
-    assert_not_nil dbes['data_types']
-    assert_not_nil dbes['validations']
-    assert_not_nil dbes['transformers']
-    assert_not_nil dbes['associations']
-  end
-  def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
-      assert_not_nil dbes['data_types']
-      assert_not_nil dbes['validations']
-      assert_not_nil dbes['transformers']
-      assert_not_nil dbes['associations']
+    def update
+    end
+    def delete
+      ZedDB::ModelValidations.delete(:user_key => uk, :locale => lc, :item => { :uuid => item['uuid'] }, :uuid => uuid)
+    end
+
+    protected
+    def set_with_owner_and_uuid(item_uuid, validation_uuid)
+      replace ZedDB::ModelValidations.get(:user_key => uk, :locale => lc,
+                                          :item => { :uuid => item_uuid }, :uuid => validation_uuid)
     end
   end
 end

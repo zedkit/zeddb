@@ -15,22 +15,38 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
-
-class TestEntities < Test::Unit::TestCase
-  def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
-    assert_not_nil dbes['data_types']
-    assert_not_nil dbes['validations']
-    assert_not_nil dbes['transformers']
-    assert_not_nil dbes['associations']
-  end
-  def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
-      assert_not_nil dbes['data_types']
-      assert_not_nil dbes['validations']
-      assert_not_nil dbes['transformers']
-      assert_not_nil dbes['associations']
+module ZedDB::CLI
+  class << self
+    def tt(locale, key, item)
+      Zedkit::CLI.lookup_tt("ZedDB::CLI", locale, key, item)
+    end
+    def ee(locale, key, item)
+      Zedkit::CLI.lookup_ee("ZedDB::CLI", locale, key, item)
     end
   end
+
+  CONTENT = {
+    :en => {
+    }
+  }
+  ERRORS = {
+    :en => {
+      :model => {
+        :uuid => "Model UUID is nil",
+        :name => "Model name is nil"
+      },
+      :item => {
+        :uuid => "Model Item UUID is nil",
+        :name => "Model Item name is nil"
+      },
+      :validation => {
+        :uuid => "Validation UUID is nil",
+        :code => "Validation code is nil"
+      },
+      :transformer => {
+        :uuid => "Transformer UUID is nil",
+        :code => "Transformer code is nil"
+      }
+    }
+  }.freeze
 end

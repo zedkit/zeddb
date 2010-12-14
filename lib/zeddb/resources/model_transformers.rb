@@ -46,19 +46,16 @@ module ZedDB
       #   end
       #
 
-      def create(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.create("db/items/#{zopts[:item][:uuid]}/transformers", zopts[:user_key],
-                                                                zopts.zdelete_keys!(%w(user_key item)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def get(zks = {}, &block)
+        Zedkit::Client.crud(:get, "db/items/#{zks[:item][:uuid]}/transformers/#{zks[:uuid]}", zks, %w(item), &block)
       end
 
-      def delete(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.delete("db/items/#{zopts[:item][:uuid]}/transformers/#{zopts[:uuid]}", zopts[:user_key])
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def create(zks = {}, &block)
+        Zedkit::Client.crud(:create, "db/items/#{zks[:item][:uuid]}/transformers", zks, %w(item), &block)
+      end
+
+      def delete(zks = {}, &block)
+        Zedkit::Client.crud(:delete, "db/items/#{zks[:item][:uuid]}/transformers/#{zks[:uuid]}", zks, [], &block)
       end
     end
   end

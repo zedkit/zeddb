@@ -16,16 +16,8 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
-$LOAD_PATH.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
-
 require 'zeddb'
 
-require 'cli/config'
-require 'cli/runner'
-require 'cli/projects'
-require 'cli/models'
-require 'cli/items'
+Dir["#{File.dirname(__FILE__)}/../lib/cli/*.rb"].each {|ci| require ci }
 
 ZedDB::CLI::Runner.new.go!
-

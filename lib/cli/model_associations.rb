@@ -15,22 +15,24 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
+module ZedDB
+  module CLI
+    class Assocs < Zedkit::CLI::Bottom
+      class << self
+        def create(opts = {})
+          puts "\n" << Zedkit::CLI.ee(opts[:locale], :general, :not_done) << "\n\n"
+        end
 
-class TestEntities < Test::Unit::TestCase
-  def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
-    assert_not_nil dbes['data_types']
-    assert_not_nil dbes['validations']
-    assert_not_nil dbes['transformers']
-    assert_not_nil dbes['associations']
-  end
-  def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
-      assert_not_nil dbes['data_types']
-      assert_not_nil dbes['validations']
-      assert_not_nil dbes['transformers']
-      assert_not_nil dbes['associations']
+        def delete(opts = {})
+          puts "\n" << Zedkit::CLI.ee(opts[:locale], :general, :not_done) << "\n\n"
+        end
+
+        protected
+        def before_create(opts = {})
+        end
+        def before_show_update_delete(opts = {})
+        end
+      end
     end
   end
 end

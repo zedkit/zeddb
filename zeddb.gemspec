@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zedkit"]
-  s.date = %q{2010-12-09}
+  s.date = %q{2010-12-14}
   s.default_executable = %q{zeddb}
   s.description = %q{gem to access the ZedDB within Zedkit applications to CRUD application models, the KVS and queues}
   s.email = %q{support@zedkit.com}
@@ -25,16 +25,26 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/zeddb",
     "lib/cli/config.rb",
+    "lib/cli/model_associations.rb",
+    "lib/cli/model_items.rb",
+    "lib/cli/model_transformer.rb",
+    "lib/cli/model_validations.rb",
     "lib/cli/models.rb",
     "lib/cli/projects.rb",
     "lib/cli/runner.rb",
+    "lib/cli/text.rb",
     "lib/zeddb.rb",
-    "lib/zeddb/model_associations.rb",
-    "lib/zeddb/model_items.rb",
-    "lib/zeddb/model_transformers.rb",
-    "lib/zeddb/model_validations.rb",
-    "lib/zeddb/models.rb",
-    "lib/zeddb/projects.rb",
+    "lib/zeddb/instances/model.rb",
+    "lib/zeddb/instances/model_item.rb",
+    "lib/zeddb/instances/model_transformer.rb",
+    "lib/zeddb/instances/model_validation.rb",
+    "lib/zeddb/instances/project.rb",
+    "lib/zeddb/resources/model_associations.rb",
+    "lib/zeddb/resources/model_items.rb",
+    "lib/zeddb/resources/model_transformers.rb",
+    "lib/zeddb/resources/model_validations.rb",
+    "lib/zeddb/resources/models.rb",
+    "lib/zeddb/resources/projects.rb",
     "test/helper.rb",
     "test/test_associations.rb",
     "test/test_entities.rb",
@@ -49,20 +59,30 @@ Gem::Specification.new do |s|
   s.rubyforge_project = %q{zeddb}
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{gem to access ZedDB within Zedkit applications}
+  s.test_files = [
+    "test/helper.rb",
+    "test/test_associations.rb",
+    "test/test_entities.rb",
+    "test/test_model_items.rb",
+    "test/test_models.rb",
+    "test/test_projects.rb",
+    "test/test_transformers.rb",
+    "test/test_validations.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<zedkit>, [">= 1.1.0"])
+      s.add_runtime_dependency(%q<zedkit>, [">= 1.1.3"])
       s.add_runtime_dependency(%q<json>, [">= 1.4.4"])
     else
-      s.add_dependency(%q<zedkit>, [">= 1.1.0"])
+      s.add_dependency(%q<zedkit>, [">= 1.1.3"])
       s.add_dependency(%q<json>, [">= 1.4.4"])
     end
   else
-    s.add_dependency(%q<zedkit>, [">= 1.1.0"])
+    s.add_dependency(%q<zedkit>, [">= 1.1.3"])
     s.add_dependency(%q<json>, [">= 1.4.4"])
   end
 end

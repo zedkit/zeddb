@@ -20,25 +20,34 @@ module ZedDB
     class Runner < Zedkit::CLI::Runner
       SECTIONS = ['projects','models','items']
 
-      protected
-      def just_do_it
-        klass = Object.const_get('ZedDB').const_get('CLI').const_get(section.capitalize)
-        klass.send command.to_sym, :user_key => user_key, :items => items_to_key_value_hash, :argv => ARGV
+      def me
+        Object.const_get('ZedDB').const_get('CLI')
       end
-      def map
+      def commands
            "\n" \
         << "== Project Commands\n\n" \
-        << "list <uuid>                              ## List project models\n\n" \
+        << "list <uuid>                                       # List a project's models\n" \
+        << "codes                                             # Outline applicable entity codes for ZedDB\n\n" \
         << "== Model Commands\n\n" \
-        << "models:show <uuid>                       ## Show model details\n" \
-        << "models:create <name> key=value [...]     ## Create a new model\n" \
-        << "models:update <uuid> key=value [...]     ## Update an existing model\n" \
-        << "models:delete <uuid>                     ## Delete an existing model\n\n" \
+        << "models:show <uuid>                                # Show model details\n" \
+        << "models:create <project> <name> key=value [...]    # Create a new model\n" \
+        << "models:update <uuid> key=value [...]              # Update an existing model\n" \
+        << "models:delete <uuid>                              # Delete an existing model\n\n" \
         << "== Model Item Commands\n\n" \
-        << "items:show <uuid>                        ## Show details of a model's data items\n" \
-        << "items:create <name> key=value [...]      ## Create a new data item within a model\n" \
-        << "items:update <uuid> key=value [...]      ## Update an existing data item\n" \
-        << "items:delete <uuid>                      ## Delete an existing data item\n\n" \
+        << "items:show <uuid>                                 # Show details of a model's data items\n" \
+        << "items:create <model> <name> key=value [...]       # Create a new data item within a model\n" \
+        << "items:update <uuid> key=value [...]               # Update an existing data item\n" \
+        << "items:delete <uuid>                               # Delete an existing data item\n\n" \
+        << "== Model Association Commands\n\n" \
+        << "assocs:create <code> key=value [...]              # Create a new association between two models\n" \
+        << "assocs:delete <uuid>                              # Delete an existing association between two models\n\n" \
+        << "== Data Item Validation Commands\n\n" \
+        << "vals:create <item> <code> key=value [...]         # Create a new validation for an existing data item\n" \
+        << "vals:update <item> <uuid> key=value [...]         # Update an existing validation\n" \
+        << "vals:delete <item> <uuid>                         # Delete an existing validation\n\n" \
+        << "== Data Item Transformer Commands\n\n" \
+        << "trans:create <item> <code>                        # Create a new transformer for an existing data item\n" \
+        << "trans:delete <item> <uuid>                        # Delete an existing transformer\n\n" \
         << "==\n\n"
       end
     end

@@ -15,29 +15,20 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-module Zedkit
-  class Projects
-    class Models
-      class << self
-        #
-        # = ZedDB Application Databases
-        #
-        # All projects/applications have an assigned database whether they use it or not. We just bypass the concept of a
-        # separate database API resource. You ask the project/application directly for the models setup within its database:
-        #
-        #   Zedkit::Projects.Models.get(:user_key => user['user_key'], :project => { :uuid => project['uuid'] })
-        #
-        # Each Zedkit project/application has an unique UUID available within the user's projects list, which you can then use
-        # here, and with all methods that collect objects attached to a project/application.
-        #
+module ZedDB
+  class ModelTransformer < Zedkit::Instance
+    def model_item
+      ZedDB::ModelItem.new(:user_key => uk, :locale => lc, :uuid => item['uuid'])
+    end
 
-        def get(*args)
-          zopts = args.extract_zedkit_options!
-          reshh = Zedkit::Client.get('db/models', zopts[:user_key], zopts.zdelete_keys!(%w(user_key)))
-          yield(reshh) if (not reshh.nil?) && block_given?
-          reshh
-        end
-      end
+    def delete
+      ZedDB::ModelTransformers.delete(:user_key => uk, :locale => lc, :item => { :uuid => item['uuid'] }, :uuid => uuid)
+    end
+
+    protected
+    def set_with_owner_and_uuid(item_uuid, transformer_uuid)
+      replace ZedDB::ModelTransformers.get(:user_key => uk, :locale => lc,
+                                          :item => { :uuid => item_uuid }, :uuid => transformer_uuid)
     end
   end
 end

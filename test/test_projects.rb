@@ -19,11 +19,17 @@ require 'helper'
 
 class TestProjects < Test::Unit::TestCase
   def test_get_models
-    mbss = pmodels
-    assert_equal 3, mbss.length
-    assert mbss[0].member? 'name'
-    assert mbss[0].member? 'uuid'
-    assert mbss[1].member? 'name'
-    assert mbss[1].member? 'uuid'
+    ms = Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
+    assert_equal 3, ms.length
+    assert ms[0].member? 'name'
+    assert ms[0].member? 'uuid'
+    assert ms[1].member? 'name'
+    assert ms[1].member? 'uuid'
+  end
+  def test_get_models_with_block
+    Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] }) do |ms|
+      assert ms.member? 'name'
+      assert ms.member? 'uuid'
+    end
   end
 end

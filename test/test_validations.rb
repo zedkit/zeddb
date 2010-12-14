@@ -18,28 +18,56 @@
 require 'helper'
 
 class TestValidations < Test::Unit::TestCase
+  def test_get
+    mv = ZedDB::ModelValidations.get(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                     :uuid => item_model['items'][0]['validations'][0]['uuid'])
+    assert_equal item_model['items'][0]['uuid'], mv['item']['uuid']
+    assert_equal 'SB', mv['validation']['code']
+  end
+  def test_get_with_block
+    ZedDB::ModelValidations.get(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                :uuid => item_model['items'][0]['validations'][0]['uuid']) do |mv|
+      assert_equal item_model['items'][0]['uuid'], mv['item']['uuid']
+      assert_equal 'SB', mv['validation']['code']
+    end
+  end
+
   def test_create_model_validation_already_in_place
-    item = pmodels.find {|i| i['name'] == 'item' }
-    mbvs = ZedDB::ModelValidations.create(:user_key => @uu['user_key'], :item => { :uuid => item['items'][0]['uuid'] },
-                                          :validation => { :code => "SB" })
-    assert_not_nil mbvs
-    assert_equal 'ERROR', mbvs['status']['result']
+    mv = ZedDB::ModelValidations.create(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                        :validation => { :code => 'SB' })
+    assert_not_nil mv
+    assert_equal 'ERROR', mv['status']['result']
     assert_equal 'The model item validation is already in use with the model data item.',
-                                               mbvs['errors']['attributes']['validation']
+                                               mv['errors']['attributes']['validation']
+  end
+  def test_create
+  end
+  def test_create_with_block
   end
 
-  def test_update_model_validation
-    item = pmodels.find {|i| i['name'] == 'item' }
-    mbvs = ZedDB::ModelValidations.update(:user_key => @uu['user_key'], :item => { :uuid => item['items'][0]['uuid'] },
-                                          :uuid => item['items'][0]['validations'][0]['uuid'],
-                                          :validation => { :qualifier => "N/A" })
-    assert_equal 'N/A', mbvs['qualifier']
+  def test_update
+    mv = ZedDB::ModelValidations.update(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                        :uuid => item_model['items'][0]['validations'][0]['uuid'],
+                                        :validation => { :qualifier => 'stuff' })
+    assert_equal 'stuff', mv['qualifier']
+  end
+  def test_update_with_block
+    ZedDB::ModelValidations.update(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                        :uuid => item_model['items'][0]['validations'][0]['uuid'],
+                                        :validation => { :qualifier => 'stuff' }) do |mv|
+      assert_equal 'stuff', mv['qualifier']
+    end
   end
 
-  def test_delete_model_validation
-    item = pmodels.find {|i| i['name'] == 'item' }
-    mbvs = ZedDB::ModelValidations.delete(:user_key => @uu['user_key'], :item => { :uuid => item['items'][0]['uuid'] },
-                                          :uuid => item['items'][0]['validations'][0]['uuid'])
-    assert_equal mbvs, {}
+  def test_delete
+    mv = ZedDB::ModelValidations.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                        :uuid => item_model['items'][0]['validations'][0]['uuid'])
+    assert_equal mv, {}
+  end
+  def test_delete_with_block
+    ZedDB::ModelValidations.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                   :uuid => item_model['items'][0]['validations'][0]['uuid']) do |mv|
+      assert_equal mv, {}
+    end
   end
 end

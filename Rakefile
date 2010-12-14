@@ -30,11 +30,11 @@ begin
     gem.authors = ["Zedkit"]
     gem.rubyforge_project = "zeddb"
 
-    gem.files = FileList['[A-Z]*', 'bin/*', 'lib/**/*.rb', 'lib/tasks/*.rake', 'test/**/*.rb']
+    gem.files = FileList['[A-Z]*', 'bin/*', 'lib/**/*.rb', 'test/**/*.rb']
     gem.executables = %w(zeddb)
     gem.default_executable = %q{zeddb}
 
-    gem.add_dependency 'zedkit', '>= 1.1.0'
+    gem.add_dependency 'zedkit', '>= 1.1.3'
     gem.add_dependency 'json', '>= 1.4.4'
   end
   Jeweler::GemcutterTasks.new
@@ -68,7 +68,6 @@ task :default => :test
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "zeddb #{version}"
   rdoc.rdoc_files.include('README*')

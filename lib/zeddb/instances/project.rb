@@ -15,22 +15,10 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##
 
-require 'helper'
-
-class TestEntities < Test::Unit::TestCase
-  def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
-    assert_not_nil dbes['data_types']
-    assert_not_nil dbes['validations']
-    assert_not_nil dbes['transformers']
-    assert_not_nil dbes['associations']
-  end
-  def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
-      assert_not_nil dbes['data_types']
-      assert_not_nil dbes['validations']
-      assert_not_nil dbes['transformers']
-      assert_not_nil dbes['associations']
+module Zedkit
+  class Project < Zedkit::Instance
+    def models
+      Zedkit::Projects::Models.get(:user_key => uk, :locale => lc, :project => { :uuid => uuid })
     end
   end
 end

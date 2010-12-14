@@ -18,34 +18,62 @@
 require 'helper'
 
 class TestModelItems < Test::Unit::TestCase
-  def test_get_model_item
-    mdss = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find{|i| i['name'] == 'item' }['uuid'])
-    miss = ZedDB::ModelItems.get(:user_key => @uu['user_key'], :uuid => mdss['items'][0]['uuid'])
-    assert_equal 32, miss['uuid'].length
-    assert_equal 'cool', miss['name']
-    assert_equal 'SR', miss['type']['code']
+  def test_get
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    mi = ZedDB::ModelItems.get(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid'])
+    assert_equal 32, mi['uuid'].length
+    assert_equal 'cool', mi['name']
+    assert_equal 'STRING', mi['type']['code']
+  end
+  def test_get_with_block
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    ZedDB::ModelItems.get(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid']) do |mi|
+      assert_equal 32, mi['uuid'].length
+      assert_equal 'cool', mi['name']
+    end
   end
 
-  def test_create_model_item
-    mdss = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find{|i| i['name'] == 'item' }['uuid'])
-    miss = ZedDB::ModelItems.create(:user_key => @uu['user_key'],
-                                    :model => { :uuid => mdss['uuid'] }, :item => { :type => 'SR', :name => 'Whatever' })
-    assert_equal 32, miss['uuid'].length
-    assert_equal 'SR', miss['type']['code']
-    assert_equal 'whatever', miss['name']
+  def test_create
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    mi = ZedDB::ModelItems.create(:user_key => @uu['user_key'],
+                                  :model => { :uuid => md['uuid'] }, :item => { :type => 'STRING', :name => 'Whatever' })
+    assert_equal 32, mi['uuid'].length
+    assert_equal 'whatever', mi['name']
+    assert_equal 'STRING', mi['type']['code']
+  end
+  def test_create_with_block
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    ZedDB::ModelItems.create(:user_key => @uu['user_key'],
+                             :model => { :uuid => md['uuid'] }, :item => { :type => 'STRING', :name => 'Whatever' }) do |mi|
+      assert_equal 32, mi['uuid'].length
+      assert_equal 'whatever', mi['name']
+    end
   end
 
-  def test_update_model_item
-    mdss = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find{|i| i['name'] == 'item' }['uuid'])
-    miss = ZedDB::ModelItems.update(:user_key => @uu['user_key'],
-                                    :uuid => mdss['items'][0]['uuid'], :item => { :name => 'newname' })
-    assert_equal mdss['items'][0]['uuid'], miss['uuid']
-    assert_equal 'newname', miss['name']
+  def test_update
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    mi = ZedDB::ModelItems.update(:user_key => @uu['user_key'],
+                                  :uuid => md['items'][0]['uuid'], :item => { :name => 'newname' })
+    assert_equal md['items'][0]['uuid'], mi['uuid']
+    assert_equal 'newname', mi['name']
+  end
+  def test_update_with_block
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    ZedDB::ModelItems.update(:user_key => @uu['user_key'],
+                             :uuid => md['items'][0]['uuid'], :item => { :name => 'newname' }) do |mi|
+      assert_equal md['items'][0]['uuid'], mi['uuid']
+    end
   end
 
-  def test_delete_model_item
-    mdss = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find{|i| i['name'] == 'item' }['uuid'])
-    miss = ZedDB::ModelItems.delete(:user_key => @uu['user_key'], :uuid => mdss['items'][0]['uuid'])
-    assert_equal miss, {}
+  def test_delete
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    mi = ZedDB::ModelItems.delete(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid'])
+    assert_equal mi, {}
+  end
+  def test_delete_with_block
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
+    ZedDB::ModelItems.delete(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid']) do |mi|
+      assert_equal mi, {}
+    end
   end
 end

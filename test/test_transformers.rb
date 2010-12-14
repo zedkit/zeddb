@@ -18,20 +18,43 @@
 require 'helper'
 
 class TestTransformers < Test::Unit::TestCase
-  def test_create_model_transformer_already_in_place
-    item = pmodels.find {|i| i['name'] == 'item' }
-    mbas = ZedDB::ModelTransformers.create(:user_key => @uu['user_key'], :item => { :uuid => item['items'][0]['uuid'] },
-                                           :transformer => { :code => 'DN' })
-    assert_not_nil mbas
-    assert_equal 'ERROR', mbas['status']['result']
-    assert_equal 'The model item tranformer is already in use with the model data item.',
-                                              mbas['errors']['attributes']['transformer']
+  def test_get
+    mt = ZedDB::ModelTransformers.get(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                      :uuid => item_model['items'][0]['transformers'][0]['uuid'])
+    assert_equal item_model['items'][0]['uuid'], mt['item']['uuid']
+    assert_equal 'DN', mt['transformer']['code']
+  end
+  def test_get_with_block
+    ZedDB::ModelTransformers.get(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                 :uuid => item_model['items'][0]['transformers'][0]['uuid']) do |mt|
+      assert_equal item_model['items'][0]['uuid'], mt['item']['uuid']
+      assert_equal 'DN', mt['transformer']['code']
+    end
   end
 
-  def test_delete_model_transformer
-    item = pmodels.find {|i| i['name'] == 'item' }
-    mbas = ZedDB::ModelTransformers.delete(:user_key => @uu['user_key'], :item => { :uuid => item['items'][0]['uuid'] },
-                                           :uuid => item['items'][0]['transformers'][0]['uuid'])
-    assert_equal mbas, {}
+  def test_create_transformer_already_in_place
+    mt = ZedDB::ModelTransformers.create(:user_key => @uu['user_key'],
+                                         :item => { :uuid => pmodels.find {|i| i['name'] == 'item' }['items'][0]['uuid'] },
+                                         :transformer => { :code => 'DN' })
+    assert_not_nil mt
+    assert_equal 'ERROR', mt['status']['result']
+    assert_equal 'The model item tranformer is already in use with the model data item.',
+                                                mt['errors']['attributes']['transformer']
+  end
+  def test_create
+  end
+  def test_create_with_block
+  end
+
+  def test_delete
+    mt = ZedDB::ModelTransformers.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                         :uuid => item_model['items'][0]['transformers'][0]['uuid'])
+    assert_equal mt, {}
+  end
+  def test_delete_with_block
+    ZedDB::ModelTransformers.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
+                                    :uuid => item_model['items'][0]['transformers'][0]['uuid']) do |mt|
+      assert_equal mt, {}
+    end
   end
 end

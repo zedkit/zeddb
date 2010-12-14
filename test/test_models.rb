@@ -18,30 +18,55 @@
 require 'helper'
 
 class TestModels < Test::Unit::TestCase
-  def test_get_model
-    mbss = Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
-    mdss = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => mbss.find{|i| i['name'] == 'bucket' }['uuid'])
-    assert_equal 32, mdss['uuid'].length
-    assert_equal 'bucket', mdss['name']
+  def test_get
+    md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'bucket' }['uuid'])
+    assert_equal 32, md['uuid'].length
+    assert_equal 'bucket', md['name']
+  end
+  def test_get_with_block
+    ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'bucket' }['uuid']) do |md|
+      assert_equal 32, md['uuid'].length
+      assert_equal 'bucket', md['name']
+    end
   end
 
-  def test_create_model
-    mdss = ZedDB::Models.create(:user_key => @uu['user_key'],
-                                :project => { :uuid => @uu['projects'][0] }, :model => { :name => 'newmodel' })
-    assert_equal 32, mdss['uuid'].length
-    assert_equal 'newmodel', mdss['name']
+  def test_create
+    md = ZedDB::Models.create(:user_key => @uu['user_key'],
+                              :project => { :uuid => @uu['projects'][0] }, :model => { :name => 'newmodel' })
+    assert_equal 32, md['uuid'].length
+    assert_equal 'newmodel', md['name']
+  end
+  def test_create_with_block
+    ZedDB::Models.create(:user_key => @uu['user_key'],
+                         :project => { :uuid => @uu['projects'][0] }, :model => { :name => 'newmodel' }) do |md|
+      assert_equal 32, md['uuid'].length
+      assert_equal 'newmodel', md['name']
+    end
   end
 
-  def test_update_model
-    mbss = Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
-    mduu = ZedDB::Models.update(:user_key => @uu['user_key'], :uuid => mbss[0]['uuid'], :model => { :name => 'newname' })
-    assert_equal mbss[0]['uuid'], mduu['uuid']
-    assert_equal 'newname', mduu['name']
+  def test_update
+    ms = pmodels
+    md = ZedDB::Models.update(:user_key => @uu['user_key'], :uuid => ms.find {|m| m['name'] == 'bucket' }['uuid'],
+                              :model => { :name => 'newname' })
+    assert_equal ms.find {|m| m['name'] == 'bucket' }['uuid'], md['uuid']
+    assert_equal 'newname', md['name']
+  end
+  def test_update_with_block
+    ms = pmodels
+    ZedDB::Models.update(:user_key => @uu['user_key'], :uuid => ms.find {|m| m['name'] == 'bucket' }['uuid'],
+                         :model => { :name => 'newname' }) do |md|
+      assert_equal ms.find {|m| m['name'] == 'bucket' }['uuid'], md['uuid']
+      assert_equal 'newname', md['name']
+    end
   end
 
-  def test_delete_model
-    mbss = Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
-    mdss = ZedDB::Models.delete(:user_key => @uu['user_key'], :uuid => mbss[0]['uuid'])
-    assert_equal mdss, {}
+  def test_delete
+    md = ZedDB::Models.delete(:user_key => @uu['user_key'], :uuid => pmodels.find {|m| m['name'] == 'bucket' }['uuid'])
+    assert_equal md, {}
+  end
+  def test_delete_with_block
+    ZedDB::Models.delete(:user_key => @uu['user_key'], :uuid => pmodels.find {|m| m['name'] == 'bucket' }['uuid']) do |md|
+      assert_equal md, {}
+    end
   end
 end

@@ -18,19 +18,47 @@
 require 'helper'
 
 class TestAssociations < Test::Unit::TestCase
-  def test_create_model_association_already_in_place
-    mbas = ZedDB::ModelAssociations.create(:user_key => @uu['user_key'],
-                                           :association => { :first => pmodels.find {|i| i['name'] == 'bucket' }['uuid'],
-                                                             :code => 'HM', :inverse => 'BT',
-                                                             :second => pmodels.find {|i| i['name'] == 'item' }['uuid'] })
-    assert_not_nil mbas
-    assert_equal 'ERROR', mbas['status']['result']
-    assert_equal "The models submitted are already associated.", mbas['errors']['attributes']['association']
+  def test_get
+    ma = ZedDB::ModelAssociations.get(:user_key => @uu['user_key'],
+                                      :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'])
+    assert ma.is_a? Hash
+    assert_equal pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'], ma['uuid']
+    assert_equal 'HM', ma['type']['code']
+    assert_equal 'BT', ma['inverse']['code']
+  end
+  def test_get_with_block
+    md = pmodels.find {|i| i['name'] == 'bucket' }
+    ZedDB::ModelAssociations.get(:user_key => @uu['user_key'], :uuid => md['associations'][0]['uuid']) do |ma|
+      assert ma.is_a? Hash
+      assert_equal pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'], ma['uuid']
+      assert_equal 'HM', ma['type']['code']
+      assert_equal 'BT', ma['inverse']['code']
+    end
   end
 
-  def test_delete_model_association
-    mbas = ZedDB::ModelAssociations.delete(:user_key => @uu['user_key'],
-                                           :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'])
-    assert_equal mbas, {}
+  def test_create_association_already_in_place
+    ma = ZedDB::ModelAssociations.create(:user_key => @uu['user_key'],
+                                         :association => { :first => pmodels.find {|i| i['name'] == 'bucket' }['uuid'],
+                                                           :code => 'HM', :inverse => 'BT',
+                                                           :second => pmodels.find {|i| i['name'] == 'item' }['uuid'] })
+    assert_not_nil ma
+    assert_equal 'ERROR', ma['status']['result']
+    assert_equal "The models submitted are already associated.", ma['errors']['attributes']['association']
+  end
+  def test_create
+  end
+  def test_create_with_block
+  end
+
+  def test_delete
+    ma = ZedDB::ModelAssociations.delete(:user_key => @uu['user_key'],
+                                         :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'])
+    assert_equal ma, {}
+  end
+  def test_delete_with_block
+    ZedDB::ModelAssociations.delete(:user_key => @uu['user_key'],
+                                    :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid']) do |ma|
+      assert_equal ma, {}
+    end
   end
 end

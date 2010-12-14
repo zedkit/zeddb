@@ -53,32 +53,20 @@ module ZedDB
       #   end
       #
 
-      def get(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.get("db/models/#{zopts[:uuid]}", zopts[:user_key], zopts.zdelete_keys!(%w(uuid user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def get(zks = {}, &block)
+        Zedkit::Client.crud(:get, "db/models/#{zks[:uuid]}", zks, [], &block)
       end
 
-      def create(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.create('db/models', zopts[:user_key], zopts.zdelete_keys!(%w(user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def create(zks = {}, &block)
+        Zedkit::Client.crud(:create, 'db/models', zks, [], &block)
       end
 
-      def update(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.update("db/models/#{zopts[:uuid]}", zopts[:user_key], zopts.zdelete_keys!(%w(uuid user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def update(zks = {}, &block)
+        Zedkit::Client.crud(:update, "db/models/#{zks[:uuid]}", zks, [], &block)
       end
       
-      def delete(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.delete("db/models/#{zopts[:uuid]}", zopts[:user_key])
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def delete(zks = {}, &block)
+        Zedkit::Client.crud(:delete, "db/models/#{zks[:uuid]}", zks, [], &block)
       end
     end
   end

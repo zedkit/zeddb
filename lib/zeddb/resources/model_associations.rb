@@ -50,18 +50,16 @@ module ZedDB
       #   end
       #
 
-      def create(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.create('db/associations', zopts[:user_key], zopts.zdelete_keys!(%w(user_key)))
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def get(zks = {}, &block)
+        Zedkit::Client.crud(:get, "db/associations/#{zks[:uuid]}", zks, [], &block)
       end
 
-      def delete(*args)
-        zopts = args.extract_zedkit_options!
-        reshh = Zedkit::Client.delete("db/associations/#{zopts[:uuid]}", zopts[:user_key])
-        yield(reshh) if (not reshh.nil?) && block_given?
-        reshh
+      def create(zks = {}, &block)
+       Zedkit::Client.crud(:create, 'db/associations', zks, [], &block)
+      end
+
+      def delete(zks = {}, &block)
+       Zedkit::Client.crud(:delete, "db/associations/#{zks[:uuid]}", zks, [], &block)
       end
     end
   end

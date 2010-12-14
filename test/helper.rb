@@ -30,6 +30,7 @@ class Test::Unit::TestCase
   def setup
     Zedkit.configure do |zb|
       zb.project_key = TEST_GEMS_PROJECT_KEY
+      # zb.exceptions = true
       # zb.api_host = '0.0.0.0'
       # zb.api_port = 5010
     end
@@ -39,5 +40,8 @@ class Test::Unit::TestCase
   protected
   def pmodels
     Zedkit::Projects::Models.get(:user_key => @uu['user_key'], :project => { :uuid => @uu['projects'][0] })
+  end
+  def item_model
+    pmodels.find {|i| i['name'] == 'item' }
   end
 end

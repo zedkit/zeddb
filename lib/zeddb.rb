@@ -21,16 +21,14 @@ require 'zedkit'
 module ZedDB
   class << self
     def entities(user_key)
-      reshh = Zedkit::Client.get('entities/zeddb', user_key)
-      yield(reshh) if (not reshh.nil?) && block_given?
-      reshh
+      rs = Zedkit::Client.get('entities/zeddb', user_key)
+      if rs && block_given?
+        rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
+      end
+      rs
     end
   end
 end
 
-require 'zeddb/projects'
-require 'zeddb/models'
-require 'zeddb/model_items'
-require 'zeddb/model_associations'
-require 'zeddb/model_validations'
-require 'zeddb/model_transformers'
+Dir["#{File.dirname(__FILE__)}/zeddb/instances/*.rb"].each {|ci| require ci }
+Dir["#{File.dirname(__FILE__)}/zeddb/resources/*.rb"].each {|ci| require ci }

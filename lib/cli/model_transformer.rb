@@ -17,41 +17,35 @@
 
 module ZedDB
   module CLI
-    class Models < Zedkit::CLI::Bottom
+    class Trans < Zedkit::CLI::Bottom
       class << self
-        def show(opts = {})
-          puts ZedDB::Model.new(:user_key => opts[:user_key], :locale => opts[:locale], :uuid => opts[:argv][0])
-        end
-
         def create(opts = {})
-          opts[:items]['name'] = opts[:argv][1]
-          puts ZedDB::Model.new(:user_key => opts[:user_key], :locale => opts[:locale]).replace \
-               ZedDB::Models.create(:user_key => opts[:user_key], :locale => opts[:locale],
-                                    :project => { :uuid => opts[:argv][0] }, :model => opts[:items])
+          opts[:items]['code'] = opts[:argv][1]
+          mt = ZedDB::ModelTransformer.new(:user_key => opts[:user_key], :locale => opts[:locale]).replace \
+               ZedDB::ModelTransformers.create(:user_key => opts[:user_key], :locale => opts[:locale],
+                                               :item => { :uuid => opts[:argv][0] }, :transformer => opts[:items])
+          puts mt.model_item
         end
-
-        def update(opts = {})
-          puts ZedDB::Model.new(:user_key => opts[:user_key], :locale => opts[:locale]).replace \
-               ZedDB::Models.update(:user_key => opts[:user_key],
-                                    :locale => opts[:locale], :uuid => opts[:argv][0], :model => opts[:items])
-        end
-
+ 
         def delete(opts = {})
-          mm = ZedDB::Model.new(:user_key => opts[:user_key], :locale => opts[:locale], :uuid => opts[:argv][0])
-          mm.delete
-          puts "\nDONE.\nZedDB Model Removed [#{mm.name}].\n\n"
+          mt = ZedDB::ModelTransformer.new(:user_key => opts[:user_key],
+                                           :locale => opts[:locale], :owner => opts[:argv][0], :uuid => opts[:argv][1])
+          mt.delete
+          puts "\nDONE.\nZedDB Model Transformer Removed [#{mt.transformer['code']}].\n\n"
         end
 
         protected
         def before_create(opts = {})
           if opts[:argv][0].nil?
-            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :project, :uuid)) end
+            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :item, :uuid)) end
           if opts[:argv][1].nil?
-            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :model, :name)) end
+            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :transformer, :code)) end
         end
         def before_show_update_delete(opts = {})
           if opts[:argv][0].nil?
-            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :model, :uuid)) end
+            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :item, :uuid)) end
+          if opts[:argv][1].nil?
+            raise Zedkit::CLI::MissingParameter.new(:message => ZedDB::CLI.ee(opts[:locale], :transformer, :uuid)) end
         end
       end
     end
