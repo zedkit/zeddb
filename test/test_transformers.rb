@@ -49,12 +49,12 @@ class TestTransformers < Test::Unit::TestCase
   def test_delete
     mt = ZedDB::ModelTransformers.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
                                          :uuid => item_model['items'][0]['transformers'][0]['uuid'])
-    assert_equal mt, {}
+    assert_nil mt
   end
   def test_delete_with_block
     ZedDB::ModelTransformers.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
                                     :uuid => item_model['items'][0]['transformers'][0]['uuid']) do |mt|
-      assert_equal mt, {}
+      assert_nil mt
     end
   end
 end

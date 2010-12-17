@@ -68,12 +68,12 @@ class TestModelItems < Test::Unit::TestCase
   def test_delete
     md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
     mi = ZedDB::ModelItems.delete(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid'])
-    assert_equal mi, {}
+    assert_nil mi
   end
   def test_delete_with_block
     md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
     ZedDB::ModelItems.delete(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid']) do |mi|
-      assert_equal mi, {}
+      assert_nil mi
     end
   end
 end

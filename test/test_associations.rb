@@ -53,12 +53,12 @@ class TestAssociations < Test::Unit::TestCase
   def test_delete
     ma = ZedDB::ModelAssociations.delete(:user_key => @uu['user_key'],
                                          :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid'])
-    assert_equal ma, {}
+    assert_nil ma
   end
   def test_delete_with_block
     ZedDB::ModelAssociations.delete(:user_key => @uu['user_key'],
                                     :uuid => pmodels.find {|i| i['name'] == 'bucket' }['associations'][0]['uuid']) do |ma|
-      assert_equal ma, {}
+      assert_nil ma
     end
   end
 end

@@ -62,12 +62,12 @@ class TestValidations < Test::Unit::TestCase
   def test_delete
     mv = ZedDB::ModelValidations.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
                                         :uuid => item_model['items'][0]['validations'][0]['uuid'])
-    assert_equal mv, {}
+    assert_nil mv
   end
   def test_delete_with_block
     ZedDB::ModelValidations.delete(:user_key => @uu['user_key'], :item => { :uuid => item_model['items'][0]['uuid'] },
                                    :uuid => item_model['items'][0]['validations'][0]['uuid']) do |mv|
-      assert_equal mv, {}
+      assert_nil mv
     end
   end
 end

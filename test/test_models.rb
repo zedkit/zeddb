@@ -62,11 +62,11 @@ class TestModels < Test::Unit::TestCase
 
   def test_delete
     md = ZedDB::Models.delete(:user_key => @uu['user_key'], :uuid => pmodels.find {|m| m['name'] == 'bucket' }['uuid'])
-    assert_equal md, {}
+    assert_nil md
   end
   def test_delete_with_block
     ZedDB::Models.delete(:user_key => @uu['user_key'], :uuid => pmodels.find {|m| m['name'] == 'bucket' }['uuid']) do |md|
-      assert_equal md, {}
+      assert_nil md
     end
   end
 end
