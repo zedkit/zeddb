@@ -20,8 +20,8 @@ require 'zedkit'
 
 module ZedDB
   class << self
-    def entities(user_key)
-      rs = Zedkit::Client.get('entities/zeddb', user_key)
+    def entities
+      rs = Zedkit::Client.get('entities/zeddb')
       if rs && block_given?
         rs.is_a?(Array) ? rs.each {|i| yield(i) } : yield(rs)
       end
@@ -30,5 +30,15 @@ module ZedDB
   end
 end
 
-Dir["#{File.dirname(__FILE__)}/zeddb/instances/*.rb"].each {|ci| require ci }
-Dir["#{File.dirname(__FILE__)}/zeddb/resources/*.rb"].each {|ci| require ci }
+require 'zeddb/instances/model.rb'
+require 'zeddb/instances/model_item.rb'
+require 'zeddb/instances/model_transformer.rb'
+require 'zeddb/instances/model_validation.rb'
+require 'zeddb/instances/project.rb'
+
+require 'zeddb/resources/models.rb'
+require 'zeddb/resources/model_associations.rb'
+require 'zeddb/resources/model_items.rb'
+require 'zeddb/resources/model_transformers.rb'
+require 'zeddb/resources/model_validations.rb'
+require 'zeddb/resources/projects.rb'

@@ -19,14 +19,14 @@ require 'helper'
 
 class TestEntities < Test::Unit::TestCase
   def test_get_entities
-    dbes = ZedDB.entities(@uu['user_key'])
+    dbes = ZedDB.entities
     assert_not_nil dbes['data_types']
     assert_not_nil dbes['validations']
     assert_not_nil dbes['transformers']
     assert_not_nil dbes['associations']
   end
   def test_entities_with_block
-    ZedDB.entities(@uu['user_key']) do |dbes|
+    ZedDB.entities do |dbes|
       assert_not_nil dbes['data_types']
       assert_not_nil dbes['validations']
       assert_not_nil dbes['transformers']
