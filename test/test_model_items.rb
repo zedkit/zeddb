@@ -22,14 +22,13 @@ class TestModelItems < Test::Unit::TestCase
     md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
     mi = ZedDB::ModelItems.get(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid'])
     assert_equal 32, mi['uuid'].length
-    assert_equal 'cool', mi['name']
     assert_equal 'STRING', mi['type']['code']
   end
   def test_get_with_block
     md = ZedDB::Models.get(:user_key => @uu['user_key'], :uuid => pmodels.find {|i| i['name'] == 'item' }['uuid'])
     ZedDB::ModelItems.get(:user_key => @uu['user_key'], :uuid => md['items'][0]['uuid']) do |mi|
       assert_equal 32, mi['uuid'].length
-      assert_equal 'cool', mi['name']
+      assert_equal 'STRING', mi['type']['code']
     end
   end
 
