@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{zeddb}
-  s.version = "1.1.3"
+  s.version = "1.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Zedkit"]
-  s.date = %q{2010-12-14}
+  s.date = %q{2011-01-06}
   s.default_executable = %q{zeddb}
   s.description = %q{gem to access the ZedDB within Zedkit applications to CRUD application models, the KVS and queues}
   s.email = %q{support@zedkit.com}
